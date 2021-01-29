@@ -5,36 +5,44 @@
   * GlusterFS
   * MariaDB
   * Wordpress
+  * Loadbalancer
 
 ## ToDo
-  * Add loadbalancer
-  * Fix mariadb if 2 nodes are down
+  * Fix gluster if 2 nodes are down
+  * Firewall
+  * Cert via Let's Encrypt
   * Test implementation
   * Improve setup.sh
 
 ## Possible improvements for a production environment:
   * run wp & db as non root container
   * docker && glusterd hardening
-  * setup automation as bootstraps
-  * use fixed docker image versions for wp & db
-  * dedicated docker swarm manager as Leader without served docker images (Loadbalancer??)
-  * better docker network handling <- tests needed
-  * improved password handling for database (printf in setup.sh)
+  * setup automation as bootstrap
+  * Improve mysql root pw handling (random pw)
+  * improve password handling for database (printf in setup.sh)
     * e.g. Specify MYSQL_RANDOM_ROOT_PASSWORD in environment variable
   * prevent Split-Brain in GlusterFS (Arbiter Volume)
-  * use dedicated volume for GlusterFS
   * external backup
   * monitoring
 
 ## Verified OS
   - Ubuntu Srv 20.10
 
-## Usage
-  - execute all commands within setup.sh
-  - deploy compose.yml to docker leader node
-  - docker stack deploy --compose-file compose.yml wpcluster
+## HAproxy stats
+  - Login
+      User: wpc
+      Pass: wpcstats
+  - can be changed in conf/haproxy.cfg
 
-## Links:
+## Usage
+  - setup 4 dedicated docker nodes
+  - execute all commands within setup.sh
+  - deploy project to docker manager
+  - cd into project
+  - run: ```docker stack deploy --compose-file compose.yml wpcluster```
+
+## Links / Credits:
   - https://docs.docker.com/engine/install/ubuntu/
   - https://docs.docker.com/engine/swarm/
   - https://docs.gluster.org/en/latest/Install-Guide/Configure/
+  - https://www.haproxy.com/de/blog/haproxy-on-docker-swarm-load-balancing-and-dns-service-discovery/

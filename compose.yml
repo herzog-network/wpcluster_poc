@@ -1,8 +1,35 @@
 version: "3.7"
 
 services:
+
+  wordpress:
+    image: wordpress:php7.4
+    volumes:
+      - /mnt/wp:/var/www/html/wp-content
+    networks:
+      - wpcnet
+      - private
+    secrets:
+      - wp_db_password
+    environment:
+      - WORDPRESS_DB_HOST=mariadb
+      - WORDPRESS_DB_USER=testuser
+      - WORDPRESS_DB_NAME=testdb
+      - WORDPRESS_DB_PASSWORD_FILE=/run/secrets/wp_db_password
+    deploy:
+      placement:
+        constraints:
+          - node.role == worker
+      mode: global
+      endpoint_mode: dnsrr
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
   mariadb:
-    image: mariadb:latest
+    image: mariadb:10.5.8
     volumes:
       - /mnt/db:/var/lib/mysql
     secrets:
@@ -14,52 +41,34 @@ services:
       - MYSQL_PASSWORD_FILE=/run/secrets/wp_db_password
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql_root_password
     networks:
-        - private
-    # command: "mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci", "--wait_timeout=28800", "--interactive_timeout=28800", "--max_allowed_packet=256M"]
+      - private
     deploy:
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
       mode: replicated
       replicas: 1
-      update_config:
-        parallelism: 2
-        delay: 10s
       restart_policy:
         condition: on-failure
-        max_attempts: 3
-        delay: 5s
-        window: 120s
 
-  wordpress:
-    image: wordpress:latest
-    # volumes:
-    #   - /mnt/wp:/..
+  haproxy:
+    image: haproxytech/haproxy-debian:2.3
+    volumes:
+      - ./conf/:/etc/haproxy/:ro
     networks:
-      - private
-    network:
-      - public
+      - wpcnet
     ports:
       - "80:80"
-    environment:
-      WORDPRESS_DB_HOST: mariadb:3306
-      WORDPRESS_DB_USER: testuser
-      WORDPRESS_DB_PASSWORD: wpcluster_poc
-      WORDPRESS_DB_NAME: testdb
+    dns:
+      - "127.0.0.11"
     deploy:
       placement:
         constraints:
           - node.role == manager
       mode: replicated
       replicas: 1
-      update_config:
-        parallelism: 2
-        delay: 10s
       restart_policy:
         condition: on-failure
-        max_attempts: 3
-        delay: 5s
-        window: 120s
 
 secrets:
   wp_db_password:
@@ -73,4 +82,6 @@ volumes:
     driver: "local"
 networks:
   private:
+    external: false
+  wpcnet:
     external: true
