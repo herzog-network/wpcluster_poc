@@ -8,7 +8,6 @@ services:
       - /mnt/wp:/var/www/html/wp-content
     networks:
       - wpcnet
-      - private
     secrets:
       - wp_db_password
     environment:
@@ -40,7 +39,7 @@ services:
       - MYSQL_PASSWORD_FILE=/run/secrets/wp_db_password
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     networks:
-      - private
+      - wpcnet
     deploy:
       placement:
         constraints:
@@ -75,6 +74,8 @@ services:
     image: nginx
     volumes:
       - ./webroot:/usr/share/nginx/html
+    networks:
+      - wpcnet
     deploy:
       placement:
         constraints:
@@ -93,7 +94,5 @@ volumes:
   wp:
     driver: "local"
 networks:
-  private:
-    external: false
   wpcnet:
-    external: true
+    external: false

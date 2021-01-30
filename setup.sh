@@ -29,7 +29,6 @@ apt-get update && apt-get install docker-ce docker-ce-cli containerd.io -y
 docker swarm init --advertise-addr 10.211.55.28                       # lb
 docker swarm join --token xyx 10.211.55.28:2377                       # web1, web2, web3
 printf wpcluster_poc | docker secret create wp_db_password -          # lb
-docker network create --attachable --driver overlay wpcnet            # lb
 
 ## GlusterFS
 ## lb, web1, web2, web3
