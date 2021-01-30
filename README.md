@@ -1,48 +1,52 @@
-# WORK IN PROGRESS
+# PROOF OF CONCEPT
 
-## Done
+Dockerized Wordpress swarm cluster with self signed certificate.
+
+![wpc](https://user-images.githubusercontent.com/75946937/106370402-f6df4a80-6359-11eb-8e34-5af04dfeec79.png)
+
+## Services
   * Docker Swarm
   * GlusterFS
   * MariaDB
   * Wordpress
-  * Loadbalancer
+  * UFW as firewall
+  * Self signed cert
+  * HAProxy as Loadbalancer
+
+## Hint
+  * There will be a short interruption if the database serving node dies
 
 ## ToDo
-  * Fix gluster if 2 nodes are down
-  * Firewall
   * Cert via Let's Encrypt
-  * Test implementation
-  * Improve setup.sh
 
-## Possible improvements for a production environment:
-  * run wp & db as non root container
-  * docker && glusterd hardening
-  * setup automation as bootstrap
-  * Improve mysql root pw handling (random pw)
-  * improve password handling for database (printf in setup.sh)
-    * e.g. Specify MYSQL_RANDOM_ROOT_PASSWORD in environment variable
-  * prevent Split-Brain in GlusterFS (Arbiter Volume)
-  * external backup
-  * monitoring
+## Improve:
+  * Run swarm non root (ntbt)
+  * Database cluster
+  * setup.sh
 
 ## Verified OS
   - Ubuntu Srv 20.10
 
 ## HAproxy stats
-  - Login
-      User: wpc
-      Pass: wpcstats
-  - can be changed in conf/haproxy.cfg
+  - Login - https://tld/my-stats  
+      - User: wpc  
+      - Pass: wpcstats
+  - configure user or passwd  
+      - conf/haproxy.cfg
 
 ## Usage
   - setup 4 dedicated docker nodes
   - execute all commands within setup.sh
   - deploy project to docker manager
   - cd into project
-  - run: ```docker stack deploy --compose-file compose.yml wpcluster```
+  - create self signed certificate
+    - ```openssl req -nodes -x509 -newkey rsa:2048 -keyout wpc.key -out wpc.crt -days 30 && cat wpc.key wpc.crt > ./certs/wpc.pem```
+  - run swarm
+    - ```docker stack deploy --compose-file compose.yml wpcluster```
 
 ## Links / Credits:
   - https://docs.docker.com/engine/install/ubuntu/
   - https://docs.docker.com/engine/swarm/
   - https://docs.gluster.org/en/latest/Install-Guide/Configure/
   - https://www.haproxy.com/de/blog/haproxy-on-docker-swarm-load-balancing-and-dns-service-discovery/
+  - https://docs.gluster.org/en/latest/Administrator-Guide/Split-brain-and-ways-to-deal-with-it/#1-replica-3-volume

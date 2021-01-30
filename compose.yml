@@ -34,12 +34,11 @@ services:
       - /mnt/db:/var/lib/mysql
     secrets:
       - wp_db_password
-      - mysql_root_password
     environment:
       - MYSQL_USER=testuser
       - MYSQL_DATABASE=testdb
       - MYSQL_PASSWORD_FILE=/run/secrets/wp_db_password
-      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/mysql_root_password
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
     networks:
       - private
     deploy:
@@ -55,10 +54,12 @@ services:
     image: haproxytech/haproxy-debian:2.3
     volumes:
       - ./conf/:/etc/haproxy/:ro
+      - ./certs:/usr/local/etc/certs:ro
     networks:
       - wpcnet
     ports:
       - "80:80"
+      - "443:443"
     dns:
       - "127.0.0.11"
     deploy:
@@ -68,12 +69,23 @@ services:
       mode: replicated
       replicas: 1
       restart_policy:
-        condition: on-failure
+        condition: any
+
+  nginx-certbot:
+    image: nginx
+    volumes:
+      - ./webroot:/usr/share/nginx/html
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: any
 
 secrets:
   wp_db_password:
-    external: true
-  mysql_root_password:
     external: true
 volumes:
   db:
