@@ -12,12 +12,10 @@ Dockerized Wordpress swarm cluster with self signed certificate.
   * UFW as firewall
   * Self signed cert
   * HAProxy as Loadbalancer
+  * Optional: LetsEncrypt integration
 
 ## Hint
   * There will be a short interruption if the database serving node dies
-
-## ToDo
-  * Cert via Let's Encrypt
 
 ## Improve:
   * Run swarm non root (ntbt)
@@ -26,6 +24,9 @@ Dockerized Wordpress swarm cluster with self signed certificate.
 
 ## Verified OS
   - Ubuntu Srv 20.10
+
+## Verified Docker version
+  - 20.10.2
 
 ## HAproxy stats
   - Login - https://tld/my-stats  
@@ -43,10 +44,13 @@ Dockerized Wordpress swarm cluster with self signed certificate.
     - ```openssl req -nodes -x509 -newkey rsa:2048 -keyout wpc.key -out wpc.crt -days 30 && cat wpc.key wpc.crt > ./certs/wpc.pem```
   - run swarm
     - ```docker stack deploy --compose-file compose.yml wpcluster```
+  - LetsEncrypt (optional)
+    - look into [create-cert.sh](create-cert.sh) and [renew-certs.sh](renew-certs.sh) for usage a short description
 
 ## Links / Credits:
   - https://docs.docker.com/engine/install/ubuntu/
   - https://docs.docker.com/engine/swarm/
   - https://docs.gluster.org/en/latest/Install-Guide/Configure/
-  - https://www.haproxy.com/de/blog/haproxy-on-docker-swarm-load-balancing-and-dns-service-discovery/
   - https://docs.gluster.org/en/latest/Administrator-Guide/Split-brain-and-ways-to-deal-with-it/#1-replica-3-volume
+  - https://www.haproxy.com/de/blog/haproxy-on-docker-swarm-load-balancing-and-dns-service-discovery/
+  - https://omarghader.github.io/haproxy-letsencrypt-docker-certbot-certificates/
