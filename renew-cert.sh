@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # LetsEncrypt renew script
-# Usage: echo "0 0 1 * * your_project_path/renew-certs.sh" >> /etc/crontab
+# Usage: echo "0 0 1 * * your_project_path/renew-cert.sh" >> /etc/crontab
 
 # Author: https://omarghader.github.io/haproxy-letsencrypt-docker-certbot-certificates/
 
@@ -10,7 +10,7 @@ set -e
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 cd $DIR
 
-echo "$(date) About to renew certificates" >> /var/log/letsencrypt-renew.log
+echo "$(date) About to renew certificate" >> /var/log/letsencrypt-renew.log
 /usr/bin/docker run \
        -i \
        --rm \
@@ -20,7 +20,7 @@ echo "$(date) About to renew certificates" >> /var/log/letsencrypt-renew.log
        certbot/certbot \
        renew -w /webroot
 
-echo "$(date) Cat certificates" >> /var/log/letsencrypt-renew.log
+echo "$(date) Cat certificate" >> /var/log/letsencrypt-renew.log
 
 function cat-cert() {
   dir="./letsencrypt/live/$1"
