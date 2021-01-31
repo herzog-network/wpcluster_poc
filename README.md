@@ -45,7 +45,7 @@ Dockerized Wordpress swarm cluster with self signed certificate.
   - run swarm
     - ```docker stack deploy --compose-file compose.yml wpcluster```
   - LetsEncrypt (optional)
-    - look into [create-cert.sh](create-cert.sh) and [renew-certs.sh](renew-certs.sh) for usage a short description
+    - look into [create-cert.sh](create-cert.sh) and [renew-certs.sh](renew-certs.sh) for a short usage description
 
 ## Links / Credits:
   - https://docs.docker.com/engine/install/ubuntu/
