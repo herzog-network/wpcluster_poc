@@ -18,8 +18,7 @@ Dockerized Wordpress swarm cluster with self signed certificate.
   * There will be a short interruption if the database serving node dies
 
 ## Improve:
-  * Run swarm non root (ntbt)
-  * Database cluster
+  * Database multi master cluster
   * setup.sh
 
 ## Verified OS
@@ -38,12 +37,9 @@ Dockerized Wordpress swarm cluster with self signed certificate.
 ## Usage
   - setup 4 dedicated docker nodes
   - execute all commands within setup.sh
-  - deploy project to docker manager
-  - cd into project
-  - create self signed certificate
-    - ```openssl req -nodes -x509 -newkey rsa:2048 -keyout wpc.key -out wpc.crt -days 30 && cat wpc.key wpc.crt > ./certs/wpc.pem```
-  - run swarm
-    - ```docker stack deploy --compose-file compose.yml wpcluster```
+  - start wpcluster  
+    - ```cd /home/swarm && wget https://github.com/herzog-network/wpcluster_poc/blob/master/startup.sh && chmod 777 startup.sh```
+    - ```sudo -H -u swarm bash -c ./startup.sh```
   - LetsEncrypt (optional)
     - look into [create-cert.sh](create-cert.sh) and [renew-cert.sh](renew-cert.sh) for a short usage description
 

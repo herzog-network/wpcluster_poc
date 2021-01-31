@@ -48,7 +48,6 @@ gluster volume start gfs                                                        
 echo 'localhost:/gfs /mnt glusterfs defaults,_netdev,backupvolfile-server=localhost 0 0' >> /etc/fstab
 mount.glusterfs localhost:/gfs /mnt
 mkdir /mnt/db && mkdir /mnt/wp
-#    default rollover time -> 60s
 
 ## Gluster service
 vi /etc/systemd/system/glusterfsmounts.service
@@ -70,8 +69,12 @@ WantedBy=multi-user.target
 
 run: systemctl daemon-reload
 run: systemctl enable glusterfsmounts
-
 ## End gluster service
+
+## Swarm user
+useradd -m -s /bin/bash swarm
+passwd swarm
+usermod -aG docker swarm
 
 ## Firewall
 Manager
