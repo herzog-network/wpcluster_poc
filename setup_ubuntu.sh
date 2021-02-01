@@ -1,8 +1,8 @@
 # ToDo:
-# + FIREWALL!!
+# Verified on Ubuntu 20.10
 # + write as setup bash script with options for ip addresses, node names, etc.
 
-## Network
+## Network example (use your own address range)
 ## lb, web1, web2, web3
 vi /etc/hosts
 10.211.55.28 lb
@@ -73,7 +73,6 @@ run: systemctl enable glusterfsmounts
 
 ## Swarm user
 useradd -m -s /bin/bash swarm
-passwd swarm
 usermod -aG docker swarm
 
 ## Firewall

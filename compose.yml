@@ -8,6 +8,7 @@ services:
       - /mnt/wp:/var/www/html/wp-content
     networks:
       - wpcnet
+      - wpcdb
     secrets:
       - wp_db_password
     environment:
@@ -39,7 +40,7 @@ services:
       - MYSQL_PASSWORD_FILE=/run/secrets/wp_db_password
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
     networks:
-      - wpcnet
+      - wpcdb
     deploy:
       placement:
         constraints:
@@ -95,4 +96,6 @@ volumes:
     driver: "local"
 networks:
   wpcnet:
+    external: false
+  wpcdb:
     external: false
